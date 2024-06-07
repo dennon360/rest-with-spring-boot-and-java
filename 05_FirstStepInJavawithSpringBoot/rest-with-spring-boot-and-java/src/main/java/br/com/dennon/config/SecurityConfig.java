@@ -23,7 +23,7 @@ import br.com.dennon.security.jwt.JwtTokenProvider;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfig{
+public class SecurityConfig {
 
 	@Autowired
 	private JwtTokenProvider tokenProvider;
@@ -31,40 +31,47 @@ public class SecurityConfig{
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		Map<String, PasswordEncoder> encoders = new HashMap<>();
-		
-		Pbkdf2PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder("", 8, 185000, SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+				
+		Pbkdf2PasswordEncoder pbkdf2Encoder = new Pbkdf2PasswordEncoder("", 8, 185000,
+                SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
 		encoders.put("pbkdf2", pbkdf2Encoder);
 		DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
 		passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
 		return passwordEncoder;
 	}
-
-	@Bean
-	AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
-	}
+	
+    @Bean
+    AuthenticationManager authenticationManagerBean(
+    		AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        
         JwtTokenFilter customFilter = new JwtTokenFilter(tokenProvider);
+        
+        //@formatter:off
         return http
-                .httpBasic(basic -> basic.disable())
-                .csrf(csrf -> csrf.disable())
-                .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)
-                    .sessionManagement(
-                		session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authorizeHttpRequests(
-                        authorizeHttpRequests -> authorizeHttpRequests
-                            .requestMatchers(
-    							"/auth/signin",
-    							"/auth/refresh/**",
-                        		"/swagger-ui/**",
-                        		"/v3/api-docs/**"
-                    		).permitAll()
-                            .requestMatchers("/api/**").authenticated()
-                            .requestMatchers("/users").denyAll()
-                    )
-                .cors(cors -> {})
-                    .build();
+            .httpBasic(basic -> basic.disable())
+            .csrf(csrf -> csrf.disable())
+            .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(
+            		session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                    authorizeHttpRequests -> authorizeHttpRequests
+                        .requestMatchers(
+							"/auth/signin",
+							"/auth/refresh/**",
+                    		"/swagger-ui/**",
+                    		"/v3/api-docs/**"
+                		).permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/users").denyAll()
+                )
+            .cors(cors -> {})
+                .build();
+        //@formatter:on
     }
 }

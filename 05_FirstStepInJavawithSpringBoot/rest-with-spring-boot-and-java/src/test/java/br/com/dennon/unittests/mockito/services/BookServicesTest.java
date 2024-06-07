@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -40,54 +39,6 @@ public class BookServicesTest {
 	void setUpMocks() throws Exception {
 		input = new MockBook();
 		MockitoAnnotations.openMocks(this);
-	}
-
-	@Test
-	void testFindAll() {
-		List<Book> list = input.mockEntityList();
-
-		when(repository.findAll()).thenReturn(list);
-
-		var books = service.findAll();
-
-		assertNotNull(books);
-		assertEquals(14, books.size());
-
-		var bookOne = books.get(1);
-
-		assertNotNull(bookOne);
-		assertNotNull(bookOne.getKey());
-		assertNotNull(bookOne.getLinks());
-
-		assertTrue(bookOne.toString().contains("links: [</api/book/v1/findall>;rel=\"self\"]"));
-		assertEquals("Some Author1", bookOne.getAuthor());
-		assertEquals("Some Title1", bookOne.getTitle());
-		assertEquals(25D, bookOne.getPrice());
-		assertNotNull(bookOne.getLaunchDate());
-
-		var bookFour = books.get(4);
-
-		assertNotNull(bookFour);
-		assertNotNull(bookFour.getKey());
-		assertNotNull(bookFour.getLinks());
-
-		assertTrue(bookFour.toString().contains("links: [</api/book/v1/findall>;rel=\"self\"]"));
-		assertEquals("Some Author4", bookFour.getAuthor());
-		assertEquals("Some Title4", bookFour.getTitle());
-		assertEquals(25D, bookFour.getPrice());
-		assertNotNull(bookFour.getLaunchDate());
-
-		var bookSeven = books.get(7);
-
-		assertNotNull(bookSeven);
-		assertNotNull(bookSeven.getKey());
-		assertNotNull(bookSeven.getLinks());
-
-		assertTrue(bookSeven.toString().contains("links: [</api/book/v1/findall>;rel=\"self\"]"));
-		assertEquals("Some Author7", bookSeven.getAuthor());
-		assertEquals("Some Title7", bookSeven.getTitle());
-		assertEquals(25D, bookSeven.getPrice());
-		assertNotNull(bookSeven.getLaunchDate());
 	}
 
 	@Test

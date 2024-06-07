@@ -15,7 +15,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class JwtTokenFilter extends GenericFilterBean{
-	
+
 	@Autowired
 	private JwtTokenProvider tokenProvider;
 	
@@ -28,15 +28,15 @@ public class JwtTokenFilter extends GenericFilterBean{
 			throws IOException, ServletException {
 		String token = tokenProvider.resolveToken((HttpServletRequest) request);
 		try {
-			if(token != null && tokenProvider.validateToken(token)) {
+			if (token != null && tokenProvider.validateToken(token)) {
 				Authentication auth = tokenProvider.getAuthentication(token);
-				if(auth != null) {
+				if (auth != null) {
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}
 			}
 		} catch (InvalidJwtAuthenticationException e) {
 			e.printStackTrace();
 		}
-		chain.doFilter(request, response);
+		chain.doFilter(request, response);		
 	}
 }
